@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/da-okazaki/semantic-release-test/compare/v1.0.0...v1.1.0) (2024-09-29)
+
+
+### Features
+
+* Update Prettier configuration and dependencies ([18e9193](https://github.com/da-okazaki/semantic-release-test/commit/18e91933a217fcddc42904f2c43cc46ee4dbe339))
+
 # 1.0.0 (2024-09-29)
 
 
