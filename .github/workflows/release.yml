@@ -1,27 +1,42 @@
-name: Release
+name: Semantic Release
 
 on:
   push:
     branches:
-      - main
+      - main  # メインブランチにプッシュされたときに実行
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
 
 jobs:
   release:
+    name: Semantic Release
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
-          node-version: '20'
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'lts/*'  # 最新のLTSバージョンを使用
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci  # パッケージをクリーンインストール
 
-      - name: Run semantic-release
+      - name: Verify the integrity of provenance attestations and registry signatures
+        run: npm audit signatures
+
+      - name: Release
         env:
-          GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}  # NPMにパブリッシュする場合に必要
         run: npx semantic-release
+
+      - name: Output new version
+        if: success()
+        run: echo "New version released: ${{ steps.semantic.outputs.new_release_version }}"
